@@ -1,0 +1,7 @@
+<Project id="841fc12d-b987-7595-df10-58698e54f02d" name="EnrollmentTracker2" location="C:\Users\Peter\Desktop\EnrollmentTracker2" description="" schemaVersion="102" epiVersion="" createDate="04/25/2018 11:19:38" useMetadataDbForCollectedData="" useBackgroundOnAllPages="False">
+  <CollectedData>
+    <Database connectionString="zHDkaR2yI5Pbh2/LYHfZ7ljYKFwMFLb6TrxCvYEORi6YrxL5fNN9mSjb1UG7SqC6IfGZQst2kqbt9RgQf5qvKCQw6IqdjAFYCXdZZf2YMz6V/CgD2jGEcWHWNYWlHTx/VBGwELd5vEWhulqPnzl3qG30oPKHc9CH7gIMVPfdGzJKywARwwpkQI1YjhYY6rXd" dataDriver="Epi.Data.Office.AccessDBFactory, Epi.Data.Office" />
+  </CollectedData>
+  <Metadata source="2" />
+  <EnterMakeviewInterpreter source="Epi.Core.EnterInterpreter" />
+</Project>
