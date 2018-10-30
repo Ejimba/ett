@@ -4,18 +4,11 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<br>
-			<legend>Enrollment Tracker Toolkit</legend>
+			<legend>[About] Enrollment Tracker Toolkit</legend>
 			<p>Toolkit to generate the CDC's enrollment tracking tool version 2 from version 1.</p>
 			<p>Enrollment Tracking tool is based on <a href="https://www.cdc.gov/epiinfo/index.html" target="_blank">EPI info</a></p>
-		</div>
-		<div class="col-sm-12">
-			<br>
-			<legend>Maintenance Tasks</legend>
-			<?php echo form_open('/home/clean');?>
-				<div class="form-group">
-					<input type="submit" class="btn btn-info" value="Clean Database" />
-				</div>
-			</form>
+			<p>Coded with love for use at <strong>site level</strong></p>
+			<p>Find my other projects at <a href="https://github.com/Ejimba" target="_blank">https://github.com/Ejimba</a></p>
 		</div>
 	</div>
 	
