@@ -372,8 +372,9 @@ class Export extends CI_Controller {
 
 					// variables not in tracker 1
 					$hts_no = isset($record->hts_no) ? $record->hts_no:null;
-					if($linked_hf_mfl == $first_positive_hf_mfl) {
+					if($linked_date == $first_positive_date) {
 						$enrolled_on_initial_test = -1;
+						$referred_expected_linkage_date = null;
 					} else {
 						$enrolled_on_initial_test = 0;
 					}
