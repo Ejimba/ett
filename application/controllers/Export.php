@@ -27,6 +27,7 @@ class Export extends CI_Controller {
 			$q1_db = $pdo_db->prepare($sql1_db);
 
 			if($q1_db->execute()) {
+				$this->load->library('uuid');
 				$pdo_etv2 = new \PDO("odbc:Driver=$driver;DBQ=$mdb_file;Uid=Admin;");
 				// we do single record fetch/insert combo as opposed to bulk insert. this is ms access, i don't wanna
 				// test it's patience
@@ -197,45 +198,59 @@ class Export extends CI_Controller {
 					switch ($record->follow_up_1_fail_reason) {
 						case 'Dead before linkage':
 							$follow_up_1_fail_reason = 'Died';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Declined':
 							$follow_up_1_fail_reason = 'Other';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Denial':
 							$follow_up_1_fail_reason = 'Other';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Incomplete Records':
 							$follow_up_1_fail_reason = 'Other';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Mteja':
 							$follow_up_1_fail_reason = 'Mteja, calls not going through, not picking calls';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'No locator information':
 							$follow_up_1_fail_reason = 'No locator information in record';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Not found/available at home':
 							$follow_up_1_fail_reason = 'Not found at home';
+							$follow_up_1_method = 'Physical Tracing';
 							break;
 						case 'Not Reachable':
 							$follow_up_1_fail_reason = 'Not found at home';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Other':
 							$follow_up_1_fail_reason = 'Other';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Relocated':
 							$follow_up_1_fail_reason = 'Migrated from reported location';
+							$follow_up_1_method = 'Physical Tracing';
 							break;
 						case 'Undecided/requires more time to initiate ART':
 							$follow_up_1_fail_reason = 'Other';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Verbal report of linkage':
 							$follow_up_1_fail_reason = 'Other';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						case 'Wrong Locator':
 							$follow_up_1_fail_reason = 'Incorrect locator information in record';
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 						default:
 							$follow_up_1_fail_reason = null;
+							$follow_up_1_method = 'Phone Tracing';
 							break;
 					}
 					$follow_up_1_fail_reason_other = $record->follow_up_1_fail_reason_other;
@@ -245,45 +260,59 @@ class Export extends CI_Controller {
 					switch ($record->follow_up_2_fail_reason) {
 						case 'Dead before linkage':
 							$follow_up_2_fail_reason = 'Died';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Declined':
 							$follow_up_2_fail_reason = 'Other';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Denial':
 							$follow_up_2_fail_reason = 'Other';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Incomplete Records':
 							$follow_up_2_fail_reason = 'Other';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Mteja':
 							$follow_up_2_fail_reason = 'Mteja, calls not going through, not picking calls';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'No locator information':
 							$follow_up_2_fail_reason = 'No locator information in record';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Not found/available at home':
 							$follow_up_2_fail_reason = 'Not found at home';
+							$follow_up_2_method = 'Physical Tracing';
 							break;
 						case 'Not Reachable':
 							$follow_up_2_fail_reason = 'Not found at home';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Other':
 							$follow_up_2_fail_reason = 'Other';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Relocated':
 							$follow_up_2_fail_reason = 'Migrated from reported location';
+							$follow_up_2_method = 'Physical Tracing';
 							break;
 						case 'Undecided/requires more time to initiate ART':
 							$follow_up_2_fail_reason = 'Other';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Verbal report of linkage':
 							$follow_up_2_fail_reason = 'Other';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						case 'Wrong Locator':
 							$follow_up_2_fail_reason = 'Incorrect locator information in record';
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 						default:
 							$follow_up_2_fail_reason = null;
+							$follow_up_2_method = 'Phone Tracing';
 							break;
 					}
 					$follow_up_2_fail_reason_other = $record->follow_up_2_fail_reason_other;
@@ -341,6 +370,39 @@ class Export extends CI_Controller {
 					$linked_reason_other = $record->linked_reason_other;
 					$linked_hf_mfl = $record->linked_hf_mfl;
 
+					// variables not in tracker 1
+					$hts_no = isset($record->hts_no) ? $record->hts_no:null;
+					if($linked_hf_mfl == $first_positive_hf_mfl) {
+						$enrolled_on_initial_test = -1;
+					} else {
+						$enrolled_on_initial_test = 0;
+					}
+					if($referred_hf_mfl == $first_positive_hf_mfl) {
+						$referred_initial_test_hf = -1;
+					} else {
+						$referred_initial_test_hf = 0;
+					}
+					$referred_outside_kenya = 0;
+					$referred_country = null;
+					$referred_country_other = null;
+
+					if($linked_hf_mfl == $first_positive_hf_mfl) {
+						$enrolled_initial_test_hf = -1;
+					} else {
+						$enrolled_initial_test_hf = 0;
+					}
+					if($linked_hf_mfl == $referred_hf_mfl) {
+						$enrolled_referred_hf = -1;
+					} else {
+						$enrolled_referred_hf = 0;
+					}
+					$enrolled_outside_kenya = 0;
+
+					if($follow_up_1 == 'Yes' || $follow_up_2 == 'Yes') {
+						$tracing = 'Yes';
+					} else {
+						$tracing = null;
+					}
 
 					$sql1_etv2 = "INSERT INTO EnrollmentTracker(RECSTATUS, GlobalRecordId, FirstSaveLogonName, FirstSaveTime, LastSaveLogonName, LastSaveTime) VALUES(?,?,?,?,?,?)";
 					$q1_etv2 = $pdo_etv2->prepare($sql1_etv2);
@@ -360,7 +422,7 @@ class Export extends CI_Controller {
 						null,
 						null,
 						$partner,
-						null,
+						$hts_no,
 						$client_name,
 						$age,
 						$gender,
@@ -373,29 +435,29 @@ class Export extends CI_Controller {
 						$first_positive_hf,
 						$first_positive_date,
 						$first_positive_ward,
-						null,
-						null,
-						null,
-						null,
-						null,
+						$enrolled_on_initial_test,
+						$referred_country,
+						$referred_initial_test_hf,
+						$referred_outside_kenya,
+						$referred_country_other,
 						$referred_county,
 						$referred_expected_linkage_date,
 						null, // $referred_sub_county,
 						$referred_hf,
 						$referred_hf_mfl,
-						null,
-						null,
-						null
+						$hts_no,
+						$client_name,
+						$ccc_number
 					]);
 
 					$sql3_etv2 = "INSERT INTO EnrollmentTracker2(GlobalRecordId, has_ccc_no, enrolled_initial_test_hf, enrolled_referred_hf, enrolled_outside_kenya, ccc_no, enrolled_date, enrolled_county, enrolled_sub_county, enrolled_hf, enrolled_hf_mfl, enrolled_country, enrolled_country_other, enrolled_reason_unsuccessful, enrolled_reason_unsuccessful_other, enrolled_remarks, tracing) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 					$q3_etv2 = $pdo_etv2->prepare($sql3_etv2);
 					$q3_etv2->execute([
 						$global_record_id,
-						null,
-						null,
-						null,
-						null,
+						$ccc_number ? 'Yes':'No',
+						$enrolled_initial_test_hf,
+						$enrolled_referred_hf,
+						$enrolled_outside_kenya,
 						$ccc_number,
 						$linked_date,
 						$linked_county,
@@ -406,29 +468,32 @@ class Export extends CI_Controller {
 						null,
 						$linked_reason,
 						$linked_reason_other,
-						null,
-						null
+						$linked_comments,
+						$tracing
 					]);
 
 					if($follow_up_1 == 'Yes') {
 
-						$sql4_etv2 = "INSERT INTO Tracing(RECSTATUS, GlobalRecordId, FirstSaveLogonName, FirstSaveTime, LastSaveLogonName, LastSaveTime) VALUES(?,?,?,?,?,?)";
+						$follow_up_1_global_record_id = $this->uuid->v4();
+
+						$sql4_etv2 = "INSERT INTO Tracing(RECSTATUS, GlobalRecordId, FirstSaveLogonName, FirstSaveTime, LastSaveLogonName, LastSaveTime, FKEY) VALUES(?,?,?,?,?,?,?)";
 						$q4_etv2 = $pdo_etv2->prepare($sql4_etv2);
 						$q4_etv2->execute([
 							$rec_status,
-							$global_record_id,
+							$follow_up_1_global_record_id,
 							$first_save_logon_name,
 							$first_save_time,
 							$last_save_logon_name,
 							$last_save_time,
+							$global_record_id,
 						]);
 
 						$sql5_etv2 = "INSERT INTO Tracing3(GlobalRecordId, tracing_date, tracing_method, tracing_outcome, tracing_unsuccessful_reason, tracing_unsuccessful_reason_other) VALUES(?,?,?,?,?,?)";
 						$q5_etv2 = $pdo_etv2->prepare($sql5_etv2);
 						$q5_etv2->execute([
-							$global_record_id,
+							$follow_up_1_global_record_id,
 							$follow_up_1_date,
-							null,
+							$follow_up_1_method,
 							$follow_up_1_reached == 'Yes' ? 'Contacted':'Not contacted',
 							$follow_up_1_fail_reason,
 							$follow_up_1_fail_reason_other,
@@ -437,23 +502,26 @@ class Export extends CI_Controller {
 
 					if($follow_up_2 == 'Yes') {
 
-						// $sql6_etv2 = "INSERT INTO Tracing(RECSTATUS, GlobalRecordId, FirstSaveLogonName, FirstSaveTime, LastSaveLogonName, LastSaveTime) VALUES(?,?,?,?,?,?)";
-						// $q6_etv2 = $pdo_etv2->prepare($sql6_etv2);
-						// $q6_etv2->execute([
-						// 	$rec_status,
-						// 	$global_record_id,
-						// 	$first_save_logon_name,
-						// 	$first_save_time,
-						// 	$last_save_logon_name,
-						// 	$last_save_time,
-						// ]);
+						$follow_up_2_global_record_id = $this->uuid->v4();
+
+						$sql6_etv2 = "INSERT INTO Tracing(RECSTATUS, GlobalRecordId, FirstSaveLogonName, FirstSaveTime, LastSaveLogonName, LastSaveTime, FKEY) VALUES(?,?,?,?,?,?,?)";
+						$q6_etv2 = $pdo_etv2->prepare($sql6_etv2);
+						$q6_etv2->execute([
+							$rec_status,
+							$follow_up_2_global_record_id,
+							$first_save_logon_name,
+							$first_save_time,
+							$last_save_logon_name,
+							$last_save_time,
+							$global_record_id,
+						]);
 
 						$sql7_etv2 = "INSERT INTO Tracing3(GlobalRecordId, tracing_date, tracing_method, tracing_outcome, tracing_unsuccessful_reason, tracing_unsuccessful_reason_other) VALUES(?,?,?,?,?,?)";
 						$q7_etv2 = $pdo_etv2->prepare($sql7_etv2);
 						$q7_etv2->execute([
-							$global_record_id,
+							$follow_up_2_global_record_id,
 							$follow_up_2_date,
-							null,
+							$follow_up_2_method,
 							$follow_up_2_reached == 'Yes' ? 'Contacted':'Not contacted',
 							$follow_up_2_fail_reason,
 							$follow_up_2_fail_reason_other,
